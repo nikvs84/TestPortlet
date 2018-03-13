@@ -4,7 +4,7 @@
 	<portlet>
 		<portlet-name>TestPortlet</portlet-name>
 		<display-name>TestPortlet</display-name>
-		<portlet-class>com.forward.CustomAuth</portlet-class>
+		<portlet-class>com.forward.Login</portlet-class>
 		<init-param>
 			<name>view-jsp</name>
 			<value>/view.jsp</value>

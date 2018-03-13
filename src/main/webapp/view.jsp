@@ -1,40 +1,46 @@
-<%--
-/**
- * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
- */
---%>
-
+<%@page import="com.liferay.portal.kernel.util.StringPool" %>
+<%@page import="com.liferay.portal.kernel.util.Validator" %>
+<%@page import="com.liferay.portal.kernel.util.ParamUtil" %>
+<%@page import="javax.portlet.ActionRequest" %>
+<%@page import="javax.portlet.PortletURL" %>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="aui" uri="http://alloy.liferay.com/tld/aui" %>
+<%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui" %>
 <portlet:defineObjects/>
 
-<jsp:useBean id="userName" class="java.lang.String" scope="request"/>
-<jsp:useBean id="authUrl" class="java.lang.String" scope="request"/>
-<%--<portlet:actionURL name="login" var="loginAction" ></portlet:actionURL>--%>
 
-<p>Hello <%= userName %>!</p>
+<%
+    String passwordNotMatched = Validator.isNotNull((String) request.getAttribute("PASSWORD_NOT_MATCHED")) ? (String) request.getAttribute("PASSWORD_NOT_MATCHED") : StringPool.BLANK;
+    String emailNotExist = Validator.isNotNull((String) request.getAttribute("EMAIL_NOT_EXIST")) ? (String) request.getAttribute("EMAIL_NOT_EXIST") : StringPool.BLANK;
 
-<aui:form action="<%=authUrl%>" id="authForm" method="post">
-    <aui:select name="authType">
-        <aui:option value="E-mail" selected="selected">E-mail</aui:option>
-        <aui:option value="UserName">UserName</aui:option>
-        <aui:option value="PhoneNumber">PhoneNumber</aui:option>
-        <aui:option value="UserId">UserId</aui:option>
-    </aui:select>
-    <aui:input type="text" name="login"/>
-    <aui:input type="password" name="password"/>
-    <aui:input title="LOGIN" value="Login" name="login" type="submit" />
+    PortletURL loginURL = renderResponse.createActionURL();
+    loginURL.setParameter(ActionRequest.ACTION_NAME, "loginUser");
+%>
+
+<%
+    if (Validator.isNotNull(emailNotExist)) {%>
+<div style="color:red;"><%=emailNotExist%>
+</div>
+<%} else if (Validator.isNotNull(passwordNotMatched)) {%>
+<div style="color:red;"><%=passwordNotMatched%>
+</div>
+<%}%>
+
+<aui:form method="post" action="<%=loginURL.toString() %>" id="aui-login-form">
+    <div class="col-lg-4 col-a-vik col-b-vik">
+        <span style="color:black;font-size: 10.5px;" id="label-email">Email Id</span>
+        <div class="input-group">
+            <input class="form-control" type="text" placeholder="Email Id" name="<portlet:namespace/>emailId"
+                   id="<portlet:namespace/>emailId" style="margin-bottom: 0px;">
+        </div>
+    </div>
+    <div class="col-lg-4 col-a-vik col-b-vik">
+        <span style="color:black;font-size: 10.5px;" id="label-pwd">Password</span>
+        <div class="input-group">
+            <input class="form-control" type="password" placeholder="password" id="<portlet:namespace/>password"
+                   name="<portlet:namespace/>password" style="margin-bottom: 0px;">
+        </div>
+    </div>
+    <div class="col-lg-4 col-a-vik col-b-vik">
+        <aui:button type="submit" id="btn-submit" style="background:#EE9400" value="Log In"/>
+    </div>
 </aui:form>
-
-This is the <b>TestPortlet</b>.
